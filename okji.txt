@@ -1,0 +1,193 @@
+conc([], L, L).
+conc([H|T], L2, [H|L3]) :- conc(T, L2, L3).
+
+% Query: ?- conc([1,2,3], [4,5], L3).
+% L3 = [1,2,3,4,5]
+
+
+delete(1, [_|T], T).
+delete(N, [H|T], [H|R]) :-
+    N > 1,
+    N1 is N - 1,
+    delete(N1, T, R).
+
+% Query: ?- delete(3, [1,2,3,4,5], R).
+% R = [1,2,4,5]
+
+
+
+evenlength([]).
+evenlength([_,_|T]) :- evenlength(T).
+
+oddlength([_]).
+oddlength([_,_|T]) :- oddlength(T).
+
+% Query: ?- evenlength([1,2,3,4]).  → true
+% Query: ?- oddlength([1,2,3]).     → true
+
+
+
+factorial(0, 1).
+factorial(N, F) :-
+    N > 0,
+    N1 is N - 1,
+    factorial(N1, F1),
+    F is N * F1.
+
+% Query: ?- factorial(5, F).
+% F = 120
+
+
+
+generate_fib(0, 0).
+generate_fib(1, 1).
+generate_fib(N, T) :-
+    N > 1,
+    N1 is N - 1,
+    N2 is N - 2,
+    generate_fib(N1, T1),
+    generate_fib(N2, T2),
+    T is T1 + T2.
+
+% Query: ?- generate_fib(7, T).
+% T = 13
+
+
+
+insert(I, 1, L, [I|L]).
+insert(I, N, [H|T], [H|R]) :-
+    N > 1,
+    N1 is N - 1,
+    insert(I, N1, T, R).
+
+% Query: ?- insert(99, 3, [1,2,3,4,5], R).
+% R = [1,2,99,3,4,5]
+
+
+
+max(X, Y, X) :- X >= Y.
+max(X, Y, Y) :- Y > X.
+
+% Query: ?- max(10, 20, M).
+% M = 20
+
+
+
+maxlist([X], X).
+maxlist([H|T], M) :-
+    maxlist(T, M1),
+    (H > M1 -> M = H ; M = M1).
+
+% Query: ?- maxlist([3,1,4,1,5,9,2,6], M).
+% M = 9
+
+
+
+memb(X, [X|_]).
+memb(X, [_|T]) :- memb(X, T).
+
+% Query: ?- memb(3, [1,2,3,4]).
+% true
+% Query: ?- memb(5, [1,2,3,4]).
+% false
+
+
+
+multi(_, 0, 0).
+multi(N1, N2, R) :-
+    N2 > 0,
+    N2_1 is N2 - 1,
+    multi(N1, N2_1, R1),
+    R is R1 + N1.
+
+% Query: ?- multi(4, 5, R).
+% R = 20
+
+
+
+power(_, 0, 1).
+power(Num, Pow, Ans) :-
+    Pow > 0,
+    Pow1 is Pow - 1,
+    power(Num, Pow1, Ans1),
+    Ans is Num * Ans1.
+
+% Query: ?- power(2, 8, Ans).
+% Ans = 256
+
+
+
+conc([], L, L).
+conc([H|T], L2, [H|L3]) :- conc(T, L2, L3).
+
+reverse([], []).
+reverse([H|T], R) :-
+    reverse(T, RT),
+    conc(RT, [H], R).
+
+% Query:
+% ?- reverse([1,2,3,4], R).
+% R = [4,3,2,1].
+
+
+
+sum(X, Y, S) :- S is X + Y.
+
+% Query: ?- sum(3, 5, S).
+% S = 8
+
+
+
+sumlist([], 0).
+sumlist([H|T], S) :-
+    sumlist(T, S1),
+    S is S1 + H.
+
+% Query: ?- sumlist([1,2,3,4,5], S).
+% S = 15
+
+
+
+male(rajesh).
+male(amit).
+male(rohan).
+
+female(sunita).
+female(priya).
+female(sneha).
+
+parent(rajesh,amit).
+parent(sunita,amit).
+parent(rajesh,priya).
+parent(sunita,priya).
+parent(amit,sneha).
+parent(priya,rohan).
+
+father(X,Y):- male(X),parent(X,Y).
+mother(X,Y):- female(X),parent(X,Y).
+
+brother(X,Y):- male(X),parent(Z,X),parent(Z,Y),X\=Y.
+sister(X,Y):- female(X),parent(Z,X),parent(Z,Y),X\=Y.
+
+grandfather(X,Y):- male(X),parent(X,Z),parent(Z,Y).
+grandmother(X,Y):- female(X),parent(X,Z),parent(Z,Y).
+
+uncle(X,Y):- brother(X,Z),parent(Z,Y).
+aunt(X,Y):- sister(X,Z),parent(Z,Y).
+
+ancestor(X,Y):- parent(X,Y).
+ancestor(X,Y):- parent(X,Z),ancestor(Z,Y).
+
+/* Queries
+
+father(X,amit).
+mother(X,priya).
+grandfather(X,sneha).
+sister(X,amit).
+uncle(X,rohan).
+ancestor(X,sneha).
+father(rajesh,amit).
+mother(sunita,priya).
+grandfather(rajesh,sneha).
+brother(amit,priya).
+aunt(priya,sneha).
